@@ -1,67 +1,89 @@
-#!/bin/bash
+# Parallel Programming Assignment
 
-# Script for Compilation and Execution of All Questions
+## Overview
+This project involves implementing and analyzing parallel matrix multiplication, Pi calculation using MPI, and Laplace's equation solver with weak and strong scaling techniques.
 
-# Question 1: Parallel Matrix Multiplication
-echo "Compiling Question 1: Parallel Matrix Multiplication..."
+## Prerequisites
+Ensure you have the following installed:
+- MPI Compiler (`mpic++`)
+- MPI Runtime Environment (`mpirun`)
 
-g++ -o parallel_matrix_multiplication parallel_matrix_multiplication.cpp
-g++ -o val_mat_mul val_mat_mul.cpp
+## Compilation and Execution Commands
 
-echo "Executing Parallel Matrix Multiplication..."
-./parallel_matrix_multiplication
+### 1. Matrix Multiplication
 
-echo "Validating Results..."
-./val_mat_mul
+#### Validation Program
+Compile the validation program**:
+            mpic++ -o val_mat_mul val_mat_mul.cpp
+Run with n=8 and p=8
+            mpirun -np 8 ./val_mat_mul
+            
+#### Parallel Matrix Multiplication
+Compile:
+            mpic++ -o parallel_matrix_multiplication parallel_matrix_multiplication.cpp
+Run for different matrix sizes and processor counts:
+            For n=32:
+            mpirun --oversubscribe -np 1 ./parallel_matrix_multiplication
+            mpirun --oversubscribe -np 2 ./parallel_matrix_multiplication
+            mpirun --oversubscribe -np 4 ./parallel_matrix_multiplication
+            mpirun --oversubscribe -np 8 ./parallel_matrix_multiplication
+            mpirun --oversubscribe -np 16 ./parallel_matrix_multiplication
+            For n=256:
+            mpirun -np 1 ./parallel_matrix_multiplication
+            mpirun -np 2 ./parallel_matrix_multiplication
+            mpirun -np 4 ./parallel_matrix_multiplication
+            mpirun -np 8 ./parallel_matrix_multiplication
+            mpirun -np 16 ./parallel_matrix_multiplication
 
-echo "Generating Plot..."
-python3 plot.py
 
 
+#### 2. Pi Calculation
 
-# Question 2: MPI-Based Pi Calculation
-echo "Compiling Question 2: MPI-Based Pi Calculation..."
-cd "Question 2" || exit
+Static Memory Allocation
+Compile the program:
+            mpic++ -o mpi_pi_calculate mpi_pi_calculate.cpp
+Run for different processor counts:
+            mpirun -np 4 ./mpi_pi_calculate
+            mpirun -np 8 ./mpi_pi_calculate
+            mpirun -np 12 ./mpi_pi_calculate
+            mpirun -np 16 ./mpi_pi_calculate
+Dynamic Memory Allocation
+Compile the program:
+            mpic++ -o dynamic_mpi_pi dynamic_mpi_pi.cpp
+Run for different processor counts:
+            mpirun -np 4 ./dynamic_mpi_pi
+            mpirun -np 8 ./dynamic_mpi_pi
+            mpirun -np 12 ./dynamic_mpi_pi
+            mpirun -np 16 ./dynamic_mpi_pi
 
-mpic++ -o dynamic_mpi_pi dynamic_mpi_pi.cpp
-mpic++ -o mpi_pi_calculate mpi_pi_calculate.cpp
-g++ -o serial_pi serial_pi.cpp
 
-echo "Executing Dynamic MPI-Based Pi Calculation..."
-mpirun -np 2 ./dynamic_mpi_pi
-mpirun -np 4 ./dynamic_mpi_pi
-mpirun -np 8 ./dynamic_mpi_pi
+##### 3. Laplace Equation Solver
+Weak Scaling
+Compile:
+            mpic++ -o laplace_weak laplace_weak.cpp
+Run for various processor counts:
+            mpirun -np 1 ./laplace_weak
+            mpirun -np 2 ./laplace_weak
+            mpirun -np 4 ./laplace_weak
+            mpirun -np 6 ./laplace_weak
+            mpirun -np 8 ./laplace_weak
+            mpirun -np 10 ./laplace_weak
+Strong Scaling
+Compile:
+            mpic++ -o laplace_strong laplace_strong.cpp
+Run for various processor counts:
+            mpirun -np 1 ./laplace_strong
+            mpirun -np 2 ./laplace_strong
+            mpirun -np 4 ./laplace_strong
+            mpirun -np 6 ./laplace_strong
+            mpirun -np 8 ./laplace_strong
+            mpirun -np 10 ./laplace_strong
 
-echo "Executing MPI-Based Pi Calculation..."
-mpirun -np 2 ./mpi_pi_calculate
-mpirun -np 4 ./mpi_pi_calculate
-mpirun -np 8 ./mpi_pi_calculate
 
-echo "Executing Serial Pi Calculation..."
-./serial_pi
+#### Notes
+Use --oversubscribe only when the number of processors exceeds physical cores.
+Ensure all required files (e.g., val_mat_mul.cpp, parallel_matrix_multiplication.cpp, etc.) are in the same directory as the execution scripts.
 
-echo "Generating Plot..."
-python3 plot.py
 
-cd .. || exit
-
-# Question 3: Laplace Scaling Analysis
-echo "Compiling Question 3: Laplace Scaling Analysis..."
-cd "Question 3" || exit
-
-g++ -o laplace_strong laplace_strong.cpp
-g++ -o laplace_weak laplace_weak.cpp
-
-echo "Executing Strong Scaling Analysis..."
-./laplace_strong
-
-echo "Executing Weak Scaling Analysis..."
-./laplace_weak
-
-echo "Generating Plot..."
-python3 plot.py
-
-cd .. || exit
-
-echo "All Tasks Completed!"
-
+##### Conclusion
+This README provides all the commands needed to compile and execute programs across various configurations. Run these commands to explore the scalability and performance of parallel computing techniques.
